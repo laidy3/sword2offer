@@ -300,3 +300,105 @@ class Solution:
         if pHead1 != None:
             p.next = pHead1
         return q.next
+
+17、树的子结构
+#转化成string 然后判断str1 in str2?
+class Solution:
+    def HasSubtree(self, pRoot1, pRoot2):
+        # write code here
+        def tostr(p):
+            if p:
+                return str(p.val) + tostr(p.left) + tostr(p.right)
+            else:
+                return ''
+        return (tostr(pRoot2) in tostr(pRoot1)) if pRoot2 else False
+
+18、二叉树的镜像
+#递归交换父节点的左右子节点
+class Solution:
+    # 返回镜像树的根节点
+    def Mirror(self, root):
+        # write code here
+        if not root:
+            return None
+        tmp = root.right
+        root.right = root.left
+        root.left = tmp
+        self.Mirror(root.left)
+        self.Mirror(root.right)
+        return root
+		
+19、顺时针打印矩阵
+#1、打印矩阵第一行 并删除 2、然后逆时针旋转剩下的 重复1、2
+class Solution:
+    # matrix类型为二维列表，需要返回列表
+    def printMatrix(self, matrix):
+        # write code here
+        result = []
+        while(matrix):
+            result += matrix.pop(0)
+            if not matrix:
+                break
+            matrix = self.turn(matrix)
+        return result
+
+
+    def turn(self,matrix):
+        num_r = len(matrix)
+        num_c = len(matrix[0])
+        newmat = []
+        for i in range(num_c):
+            newmat2 = []
+            for j in range(num_r):
+                newmat2.append(matrix[j][i])
+            newmat.append(newmat2)
+        newmat.reverse()
+        return newmat
+20、包含min函数的栈
+# 构建辅助栈 存储主栈的最小值
+class Solution:
+    def __init__(self):
+        self.stack = []
+        self.assist = [] #辅助栈
+
+    def push(self, node):
+        min = self.min()
+        if not min or node < min:
+            self.assist.append(node) #存储最小值在栈顶
+        else:
+            self.assist.append(min) #存储最小值在栈顶
+        self.stack.append(node)
+         
+    def pop(self):
+        if self.stack:
+            self.assist.pop()
+            return self.stack.pop()
+
+    def top(self):
+        # write code here
+        if self.stack:
+            return self.stack[-1]
+    def min(self):
+        # write code here
+        if self.assist:
+            return self.assist[-1]
+			
+21、栈的压入、弹出序列
+#借用一个辅助的栈，遍历压栈顺序，判断栈顶元素是不是出栈顺序的第一个元素，不是则继续压栈，直到相等以后开始出栈，
+#重复入栈、出栈。最后如果辅助栈还不为空，说明弹出序列不是该栈的弹出顺序。
+class Solution:
+    def IsPopOrder(self, pushV, popV):
+        # write code here
+        stack = []
+        while popV:
+            if pushV and pushV[0] == popV[0]:
+                pushV.pop(0)
+                popV.pop(0)
+            elif stack and stack[-1] == popV[0]:
+                stack.pop()
+                popV.pop(0)
+            elif pushV:
+                stack.append(pushV.pop(0))
+            else:
+                return False
+        return True
